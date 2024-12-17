@@ -1,0 +1,228 @@
+/* Tổng quát */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9fafb; /* Nền tổng thể */
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.bg-gray-50 {
+  background-color: #f9fafb;
+}
+
+.bg-white {
+  background-color: #ffffff;
+}
+
+.text-gray-600 {
+  color: #4b5563;
+}
+
+.text-gray-700 {
+  color: #374151;
+}
+
+.text-gray-500 {
+  color: #6b7280;
+}
+
+.text-yellow-500 {
+  color: #f59e0b;
+}
+
+.p-6 {
+  padding: 1.5rem;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.shadow-md {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.transition {
+  transition: all 0.3s ease-in-out;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+/* Tiêu đề */
+.text-3xl {
+  font-size: 1.875rem; /* 30px */
+  line-height: 2.25rem; /* 36px */
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+.text-xl {
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.75rem; /* 28px */
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+/* Định dạng ảnh */
+.w-full {
+  width: 100%;
+}
+
+.h-64 {
+  height: 16rem; /* 256px */
+}
+
+.object-cover {
+  object-fit: cover;
+}
+
+/* Bình luận */
+.space-y-4 > * + * {
+  margin-top: 1rem; /* Khoảng cách giữa các bình luận */
+}
+
+.bg-gray-50 {
+  background-color: #f9fafb;
+}
+
+.border {
+  border-width: 1px;
+}
+
+.border-t {
+  border-top-width: 1px;
+}
+
+.pt-6 {
+  padding-top: 1.5rem;
+}
+
+/* Nút */
+button {
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.bg-gray-500 {
+  background-color: #6b7280;
+}
+
+.bg-gray-600 {
+  background-color: #4b5563;
+}
+
+.bg-blue-600 {
+  background-color: #2563eb;
+}
+
+.bg-blue-700 {
+  background-color: #1d4ed8;
+}
+
+.text-white {
+  color: white;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.hover\:bg-gray-600:hover {
+  background-color: #4b5563;
+}
+
+.hover\:bg-blue-700:hover {
+  background-color: #1d4ed8;
+}
+
+.flex {
+  display: flex;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-2 > * + * {
+  margin-left: 0.5rem;
+}
+
+.gap-4 > * + * {
+  margin-left: 1rem;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.focus\:outline-none:focus {
+  outline: none;
+}
+
+.focus\:ring-2:focus {
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.5); /* Ánh sáng xanh khi focus */
+}
+
+.focus\:ring-blue-500:focus {
+  border-color: #3b82f6;
+}
+
+/* Đánh giá */
+.text-2xl {
+  font-size: 1.5rem;
+}
+
+/* Textarea */
+textarea {
+  resize: none;
+}
+
+textarea.w-full {
+  width: 100%;
+}
+
+textarea.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+textarea.border {
+  border: 1px solid #d1d5db;
+}
+
+textarea.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+textarea.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
