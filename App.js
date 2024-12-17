@@ -19,6 +19,7 @@ const App = () => {
   const [selectedCategory, setSelectedCategory] = useState("all"); // Danh mục được chọn
   const [user, setUser] = useState(null); // Thông tin người dùng
   const [error, setError] = useState(null); // Thông báo lỗi khi upload tài liệu
+  const [token, setToken] = useState(localStorage.getItem("token")); // Lấy token từ localStorage
 
   // Fetch dữ liệu danh mục và tài liệu từ API
   useEffect(() => {
@@ -116,6 +117,8 @@ const App = () => {
           setUser={setUser}
           loading={loading}
           error={error} // Truyền error xuống để hiển thị
+          token={token} // Truyền token để xác thực đăng nhập
+          setToken={setToken} // Cập nhật token khi đăng nhập
         />
       </div>
     </Router>
@@ -138,6 +141,8 @@ const InnerApp = ({
   setUser,
   loading,
   error,
+  token,
+  setToken,
 }) => {
   const location = useLocation();
 
@@ -179,7 +184,7 @@ const InnerApp = ({
           />
           <Route
             path="/upload"
-            element={<UploadView categories={categories} handleUploadDocument={handleUploadDocument} />}
+            element={<UploadView categories={categories} handleUploadDocument={handleUploadDocument} token={token} />}
           />
         </Routes>
       </div>
