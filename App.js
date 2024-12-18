@@ -98,7 +98,7 @@ const App = () => {
   };
 
   const filteredDocuments = documents.filter((doc) => {
-    const matchesCategory = selectedCategory === "all" || doc.category_id === selectedCategory;
+    const matchesCategory = selectedCategory === "all" || doc.category_id.toString() === selectedCategory;
     const matchesSearchTerm =
       doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doc.description.toLowerCase().includes(searchTerm.toLowerCase());
