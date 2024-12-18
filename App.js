@@ -5,6 +5,7 @@ import HomeView from "./components/HomeView";
 import DocumentsView from "./components/DocumentsView";
 import DocumentDetail from "./components/DocumentDetail";
 import UploadView from "./components/UploadView";
+import LoginPage from './components/Auth/LoginPage';
 import axios from "axios";
 import "./App.css";
 
@@ -90,6 +91,12 @@ const App = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    setUser(null);
+  };
+
   const filteredDocuments = documents.filter((doc) => {
     const matchesCategory = selectedCategory === "all" || doc.category_id === selectedCategory;
     const matchesSearchTerm =
@@ -113,12 +120,13 @@ const App = () => {
           handleUploadDocument={handleUploadDocument}
           handleAddComment={handleAddComment}
           handleAddRating={handleAddRating}
-          user={user}
+          user={user} // Truyền đối tượng user vào đây
           setUser={setUser}
           loading={loading}
           error={error} // Truyền error xuống để hiển thị
           token={token} // Truyền token để xác thực đăng nhập
           setToken={setToken} // Cập nhật token khi đăng nhập
+          handleLogout={handleLogout} // Thêm hàm đăng xuất
         />
       </div>
     </Router>
@@ -137,19 +145,20 @@ const InnerApp = ({
   handleUploadDocument,
   handleAddComment,
   handleAddRating,
-  user,
+  user, // Nhận đối tượng user
   setUser,
   loading,
   error,
   token,
   setToken,
+  handleLogout,
 }) => {
   const location = useLocation();
 
   return (
     <div className="App">
       {/* Hiển thị Navbar ngoại trừ trang chủ */}
-      {location.pathname !== "/" && <Navbar />}
+      {location.pathname !== "/" && <Navbar user={user} handleLogout={handleLogout} />}
       <div className="content-container">
         {/* Hiển thị thông báo lỗi nếu có */}
         {error && <div className="error-message">{error}</div>}
@@ -178,14 +187,15 @@ const InnerApp = ({
                 setSelectedDocument={setSelectedDocument}
                 handleAddComment={handleAddComment}
                 handleAddRating={handleAddRating}
-                user={user}
+                user={user} // Truyền user vào DocumentDetail nếu cần
               />
             }
           />
           <Route
             path="/upload"
-            element={<UploadView categories={categories} handleUploadDocument={handleUploadDocument} token={token} />}
+            element={<UploadView categories={categories} handleUploadDocument={handleUploadDocument} user={user} />} // Truyền user vào UploadView
           />
+          <Route path="/login" element={<LoginPage setToken={setToken} setUser={setUser} />} /> {/* Truyền setUser vào LoginPage để cập nhật trạng thái người dùng */}
         </Routes>
       </div>
     </div>
