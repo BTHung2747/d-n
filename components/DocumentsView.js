@@ -1,15 +1,16 @@
-import React, { useState } from "react";
-import { FaSearch, FaUpload, FaSpinner, FaEye, FaDownload } from "react-icons/fa";
+import React from "react";
+import { FaSearch, FaUpload, FaSpinner, FaDownload } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import './DocumentsView.css'; // Import CSS
 
 const DocumentsView = ({ documents, categories, searchTerm, setSearchTerm, selectedCategory, setSelectedCategory, setSelectedDocument, loading }) => {
   const navigate = useNavigate(); // Thêm useNavigate để điều hướng trang
 
-  const filteredDocuments = documents.filter(doc =>
-    doc.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (!selectedCategory || doc.category_id === selectedCategory)
-  );
+  const filteredDocuments = documents.filter(doc => {
+    const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === "all" || doc.category_id.toString() === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="documents-container">
@@ -25,26 +26,23 @@ const DocumentsView = ({ documents, categories, searchTerm, setSearchTerm, selec
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-
           <select
             className="category-select"
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
           >
             <option value="all">All Categories</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>{category.name}</option>
+            {categories.map(category => (
+              <option key={category.id} value={category.id.toString()}>{category.name}</option>
             ))}
           </select>
-
           <button
             onClick={() => navigate("/upload")}  // Dùng navigate để điều hướng đến trang upload
             className="upload-btn"
           >
-            <FaUpload /> Upload
+            <FaUpload className="mr-2" /> Upload
           </button>
         </div>
-
         <div className="documents-grid">
           {loading ? (
             <div className="loading-spinner">
@@ -54,7 +52,7 @@ const DocumentsView = ({ documents, categories, searchTerm, setSearchTerm, selec
             filteredDocuments.map((doc) => (
               <div key={doc.id} className="document-card">
                 <img
-                  src={doc.image_path}
+                  src={doc.image_path || "https://images.unsplash.com/photo-1568184979902-9d24ebc0bc2f"}
                   alt={doc.title}
                   className="document-image"
                 />
@@ -63,7 +61,7 @@ const DocumentsView = ({ documents, categories, searchTerm, setSearchTerm, selec
                   <p className="document-description">{doc.description}</p>
                   <div className="document-footer">
                     <span className="views">
-                      <FaEye /> {doc.views}
+                      {doc.views} views
                     </span>
                     <div className="action-buttons">
                       <button
@@ -75,9 +73,14 @@ const DocumentsView = ({ documents, categories, searchTerm, setSearchTerm, selec
                       >
                         Details
                       </button>
-                      <button className="download-btn">
-                        <FaDownload /> Download
-                      </button>
+                      <a
+                        href={doc.file_path}
+                        className="download-btn"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <FaDownload className="mr-2" /> Download
+                      </a>
                     </div>
                   </div>
                 </div>
