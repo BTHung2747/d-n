@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { FaSpinner, FaUpload } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";  // Thêm useNavigate
-import './UploadView.css'; // Import CSS cho component
+import { useNavigate } from "react-router-dom";
+import './UploadView.css';
+import axios from "axios";
 
-const UploadView = ({ categories, handleUploadDocument }) => {
+const UploadView = ({ categories, user }) => {
   const [formData, setFormData] = useState({
     title: "",
     category_id: "",
@@ -13,19 +14,44 @@ const UploadView = ({ categories, handleUploadDocument }) => {
   });
 
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();  // Khởi tạo useNavigate để điều hướng
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!user) {
+      setError("Vui lòng đăng nhập trước khi tải lên tài liệu.");
+      return;
+    }
+    console.log("User ID:", user.id);
+
     const uploadData = new FormData();
-    for (const key in formData) {
-      uploadData.append(key, formData[key]);
+    uploadData.append("title", formData.title);
+    uploadData.append("category_id", formData.category_id);
+    uploadData.append("description", formData.description);
+    uploadData.append("file", formData.file);
+    uploadData.append("image", formData.image);
+    uploadData.append("user_id", user.id); // Đảm bảo user_id được truyền đúng
+
+    // Log chi tiết về các trường dữ liệu
+    for (let [key, value] of uploadData.entries()) {
+      console.log(`${key}:`, value);
     }
 
     setLoading(true);
-    await handleUploadDocument(uploadData);  // Gọi hàm upload
-    setLoading(false);
-    navigate("/documents");  // Điều hướng đến trang Documents sau khi tải lên thành công
+    try {
+      const response = await axios.post("http://localhost:3000/api/documents", uploadData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+      console.log("Upload Response:", response.data);
+      setLoading(false);
+      navigate("/documents");
+    } catch (error) {
+      console.error("Error uploading document:", error);
+      setError("Lỗi khi tải lên tài liệu. Vui lòng thử lại.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -108,6 +134,7 @@ const UploadView = ({ categories, handleUploadDocument }) => {
               {loading ? "Uploading..." : "Upload"}
             </button>
           </div>
+          {error && <p className="error-message">{error}</p>}
         </form>
       </div>
     </div>
