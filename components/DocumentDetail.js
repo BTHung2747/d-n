@@ -1,47 +1,68 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { FaEye, FaStar, FaComment } from "react-icons/fa";
 import './DocumentDetail.css';
 
 const DocumentDetail = ({
   selectedDocument,
   setView,
-  handleAddComment,
   handleAddRating,
   user,
+  setSelectedDocument,
 }) => {
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
+  const [newComment, setNewComment] = useState({ text: "", rating: 5 });
 
-  // Nếu không có tài liệu được chọn, trả về giao diện rỗng
+  useEffect(() => {
+    const fetchDocumentDetails = async () => {
+      if (selectedDocument) {
+        try {
+          const response = await axios.get(`http://localhost:3001/api/documents/${selectedDocument.id}`);
+          setSelectedDocument(response.data);
+        } catch (error) {
+          console.error("Error fetching document details:", error);
+        }
+      }
+    };
+
+    fetchDocumentDetails();
+  }, [selectedDocument?.id, setSelectedDocument]);
+
   if (!selectedDocument) return <p>No document selected.</p>;
 
-  // Gửi bình luận
-  const handleCommentSubmit = async () => {
-    if (comment.trim()) {
-      await handleAddComment(selectedDocument.id, comment);
-      setComment(""); // Xóa nội dung bình luận sau khi gửi
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`http://localhost:3001/api/comments/${selectedDocument.id}`, {
+        comment: newComment.text,
+        rating: newComment.rating,
+      });
+      const response = await axios.get(`http://localhost:3001/api/documents/${selectedDocument.id}`);
+      setSelectedDocument(response.data);
+      setNewComment({ text: "", rating: 5 });
+      setComment("");
+      setRating(0);
+    } catch (error) {
+      console.error("Error submitting comment:", error);
     }
   };
 
-  // Gửi đánh giá
   const handleRatingSubmit = async (value) => {
     if (value > 0) {
       await handleAddRating(selectedDocument.id, value);
-      setRating(value); // Cập nhật đánh giá trong giao diện
+      setRating(value); 
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-        {/* Hình ảnh tài liệu */}
         <img
-          src={selectedDocument.image_path}
+          src={selectedDocument.image_path || "https://images.unsplash.com/photo-1568184979902-9d24ebc0bc2f"}
           alt={selectedDocument.title}
           className="w-full h-64 object-cover"
         />
-
-        {/* Thông tin tài liệu */}
         <div className="p-6">
           <h2 className="text-3xl font-bold mb-4">{selectedDocument.title}</h2>
           <p className="text-gray-600 mb-4">{selectedDocument.description}</p>
@@ -54,21 +75,17 @@ const DocumentDetail = ({
               {selectedDocument.average_rating || 0}
             </span>
           </div>
-
-          {/* Phần bình luận */}
           <div className="border-t pt-6">
             <h3 className="text-xl font-semibold mb-4">Comments</h3>
             <div className="space-y-4 mb-6">
               {selectedDocument.comments &&
-                selectedDocument.comments.map((comment) => (
-                  <div key={comment.id} className="bg-gray-50 p-4 rounded-lg">
+                selectedDocument.comments.map((comment, index) => (
+                  <div key={index} className="bg-gray-50 p-4 rounded-lg">
                     <p className="font-semibold">{comment.username}</p>
                     <p className="text-gray-600">{comment.comment}</p>
                   </div>
                 ))}
             </div>
-
-            {/* Chỉ hiển thị phần bình luận và đánh giá khi có người dùng */}
             {user && (
               <div className="space-y-4">
                 <div>
@@ -90,8 +107,8 @@ const DocumentDetail = ({
                   <textarea
                     className="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500"
                     rows="3"
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
+                    value={newComment.text}
+                    onChange={(e) => setNewComment({ ...newComment, text: e.target.value })}
                   ></textarea>
                 </div>
                 <div className="flex justify-between">
